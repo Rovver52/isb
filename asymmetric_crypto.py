@@ -1,15 +1,14 @@
-from cryptography.hazmat.primitives import serialization, hashes
+from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import rsa, padding as asym_padding
-from cryptography.hazmat.primitives.serialization import load_pem_private_key, load_pem_public_key
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey, RSAPublicKey
 
 
 class AsymmetricCrypto:
-    """Класс для работы с асимметричным шифрованием (RSA)"""
-
+    """Класс для асимметричного шифрования (RSA)"""
+    
     @staticmethod
     def generate_keys() -> tuple[RSAPrivateKey, RSAPublicKey]:
-        """Генерирует пару RSA ключей"""
+        """Генерирует пару RSA ключей (приватный и публичный)"""
         private_key = rsa.generate_private_key(
             public_exponent=65537,
             key_size=2048
@@ -17,42 +16,11 @@ class AsymmetricCrypto:
         return private_key, private_key.public_key()
 
     @staticmethod
-    def save_public_key(public_key: RSAPublicKey, path: str) -> None:
-        """Сохраняет публичный ключ в файл"""
-        with open(path, 'wb') as f:
-            f.write(public_key.public_bytes(
-                encoding=serialization.Encoding.PEM,
-                format=serialization.PublicFormat.SubjectPublicKeyInfo
-            ))
-
-    @staticmethod
-    def save_private_key(private_key: RSAPrivateKey, path: str) -> None:
-        """Сохраняет приватный ключ в файл"""
-        with open(path, 'wb') as f:
-            f.write(private_key.private_bytes(
-                encoding=serialization.Encoding.PEM,
-                format=serialization.PrivateFormat.TraditionalOpenSSL,
-                encryption_algorithm=serialization.NoEncryption()
-            ))
-
-    @staticmethod
-    def load_private_key(path: str) -> RSAPrivateKey:
-        """Загружает приватный ключ из файла"""
-        with open(path, 'rb') as f:
-            return load_pem_private_key(f.read(), password=None)
-
-    @staticmethod
-    def load_public_key(path: str) -> RSAPublicKey:
-        """Загружает публичный ключ из файла"""
-        with open(path, 'rb') as f:
-            return load_pem_public_key(f.read())
-
-    @staticmethod
     def encrypt_with_public_key(
-            public_key: RSAPublicKey,
-            data: bytes
+        public_key: RSAPublicKey,
+        data: bytes
     ) -> bytes:
-        """Шифрует данные публичным ключом"""
+        """Шифрует данные с помощью публичного ключа"""
         return public_key.encrypt(
             data,
             asym_padding.OAEP(
@@ -64,10 +32,10 @@ class AsymmetricCrypto:
 
     @staticmethod
     def decrypt_with_private_key(
-            private_key: RSAPrivateKey,
-            encrypted_data: bytes
+        private_key: RSAPrivateKey,
+        encrypted_data: bytes
     ) -> bytes:
-        """Дешифрует данные приватным ключом"""
+        """Дешифрует данные с помощью приватного ключа"""
         return private_key.decrypt(
             encrypted_data,
             asym_padding.OAEP(

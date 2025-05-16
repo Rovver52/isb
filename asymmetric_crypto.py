@@ -4,11 +4,11 @@ from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey, RSAPubl
 
 
 class AsymmetricCrypto:
-    """Класс для асимметричного шифрования (RSA)"""
-    
+    """Класс для работы с асимметричным шифрованием (RSA)"""
+
     @staticmethod
     def generate_keys() -> tuple[RSAPrivateKey, RSAPublicKey]:
-        """Генерирует пару RSA ключей (приватный и публичный)"""
+        """Генерирует пару RSA ключей"""
         private_key = rsa.generate_private_key(
             public_exponent=65537,
             key_size=2048
@@ -17,10 +17,10 @@ class AsymmetricCrypto:
 
     @staticmethod
     def encrypt_with_public_key(
-        public_key: RSAPublicKey,
-        data: bytes
+            public_key: RSAPublicKey,
+            data: bytes
     ) -> bytes:
-        """Шифрует данные с помощью публичного ключа"""
+        """Шифрует данные публичным ключом"""
         return public_key.encrypt(
             data,
             asym_padding.OAEP(
@@ -32,10 +32,10 @@ class AsymmetricCrypto:
 
     @staticmethod
     def decrypt_with_private_key(
-        private_key: RSAPrivateKey,
-        encrypted_data: bytes
+            private_key: RSAPrivateKey,
+            encrypted_data: bytes
     ) -> bytes:
-        """Дешифрует данные с помощью приватного ключа"""
+        """Дешифрует данные приватным ключом"""
         return private_key.decrypt(
             encrypted_data,
             asym_padding.OAEP(

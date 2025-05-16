@@ -22,8 +22,8 @@ class HybridCryptoSystem:
         symmetric_key = self.symmetric.generate_key(key_size)
 
         # Сохранение ключей
-        self.asymmetric.save_public_key(public_key, self.config.PATHS['PUBLIC_KEY'])
-        self.asymmetric.save_private_key(private_key, self.config.PATHS['SECRET_KEY'])
+        self.files.save_key(public_key, self.config.PATHS['PUBLIC_KEY'])
+        self.files.save_key(private_key, self.config.PATHS['SECRET_KEY'])
 
         # Шифрование и сохранение симметричного ключа
         encrypted_sym_key = self.asymmetric.encrypt_with_public_key(public_key, symmetric_key)
@@ -37,8 +37,8 @@ class HybridCryptoSystem:
         input_path = input_file or self.config.PATHS['INITIAL_FILE']
         output_path = output_file or self.config.PATHS['ENCRYPTED_FILE']
 
-        # Загрузка ключей
-        private_key = self.asymmetric.load_private_key(self.config.PATHS['SECRET_KEY'])
+        # Загрузка ключей через FileManager
+        private_key = self.files.load_private_key(self.config.PATHS['SECRET_KEY'])
         encrypted_sym_key = self.files.load_file(self.config.PATHS['SYMMETRIC_KEY'])
         symmetric_key = self.asymmetric.decrypt_with_private_key(private_key, encrypted_sym_key)
 
@@ -57,7 +57,7 @@ class HybridCryptoSystem:
         output_path = output_file or self.config.PATHS['DECRYPTED_FILE']
 
         # Загрузка ключей
-        private_key = self.asymmetric.load_private_key(self.config.PATHS['SECRET_KEY'])
+        private_key = self.files.load_private_key(self.config.PATHS['SECRET_KEY'])
         encrypted_sym_key = self.files.load_file(self.config.PATHS['SYMMETRIC_KEY'])
         symmetric_key = self.asymmetric.decrypt_with_private_key(private_key, encrypted_sym_key)
 
@@ -81,7 +81,7 @@ class HybridCryptoSystem:
         symmetric_key = self.symmetric.generate_key(key_size)
 
         # Загрузка публичного ключа
-        public_key = self.asymmetric.load_public_key(public_key_path)
+        public_key = self.files.load_public_key(public_key_path)
 
         # Шифрование симметричного ключа
         encrypted_sym_key = self.asymmetric.encrypt_with_public_key(public_key, symmetric_key)
@@ -107,7 +107,7 @@ class HybridCryptoSystem:
         encrypted_content = encrypted_data[256:]
 
         # Загрузка приватного ключа
-        private_key = self.asymmetric.load_private_key(private_key_path)
+        private_key = self.files.load_private_key(private_key_path)
 
         # Дешифрование симметричного ключа
         symmetric_key = self.asymmetric.decrypt_with_private_key(private_key, encrypted_sym_key)

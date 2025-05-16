@@ -5,17 +5,17 @@ from cryptography.hazmat.primitives.serialization import load_pem_private_key, l
 
 
 class FileManager:
-    """Класс для работы с файлами (ключами и данными)"""
-    
+    """Класс для работы с файлами криптографических ключей и данных"""
+
     @staticmethod
     def save_file(path: str, data: bytes) -> None:
-        """Сохраняет бинарные данные в файл"""
+        """Сохраняет данные в файл (совместимость со старым кодом)"""
         with open(path, 'wb') as f:
             f.write(data)
 
     @staticmethod
     def load_file(path: str) -> bytes:
-        """Загружает бинарные данные из файла"""
+        """Загружает данные из файла (совместимость со старым кодом)"""
         with open(path, 'rb') as f:
             return f.read()
 

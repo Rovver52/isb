@@ -1,26 +1,48 @@
-class FileManager:
-    """Класс для работы с файлами"""
+from typing import Union
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey, RSAPublicKey
+from cryptography.hazmat.primitives.serialization import load_pem_private_key, load_pem_public_key
 
+
+class FileManager:
+    """Класс для работы с файлами (ключами и данными)"""
+    
     @staticmethod
     def save_file(path: str, data: bytes) -> None:
-        """Сохраняет данные в файл"""
+        """Сохраняет бинарные данные в файл"""
         with open(path, 'wb') as f:
             f.write(data)
 
     @staticmethod
     def load_file(path: str) -> bytes:
-        """Загружает данные из файла"""
+        """Загружает бинарные данные из файла"""
         with open(path, 'rb') as f:
             return f.read()
 
     @staticmethod
-    def read_text_file(path: str) -> str:
-        """Читает текстовый файл"""
-        with open(path, 'r', encoding='utf-8') as f:
-            return f.read()
+    def save_key(key: Union[RSAPrivateKey, RSAPublicKey], path: str) -> None:
+        """Сохраняет криптографический ключ в файл"""
+        with open(path, 'wb') as f:
+            if isinstance(key, RSAPrivateKey):
+                f.write(key.private_bytes(
+                    encoding=serialization.Encoding.PEM,
+                    format=serialization.PrivateFormat.TraditionalOpenSSL,
+                    encryption_algorithm=serialization.NoEncryption()
+                ))
+            else:  # RSAPublicKey
+                f.write(key.public_bytes(
+                    encoding=serialization.Encoding.PEM,
+                    format=serialization.PublicFormat.SubjectPublicKeyInfo
+                ))
 
     @staticmethod
-    def write_text_file(path: str, text: str) -> None:
-        """Записывает текст в файл"""
-        with open(path, 'w', encoding='utf-8') as f:
-            f.write(text)
+    def load_private_key(path: str) -> RSAPrivateKey:
+        """Загружает приватный RSA ключ из файла"""
+        with open(path, 'rb') as f:
+            return load_pem_private_key(f.read(), password=None)
+
+    @staticmethod
+    def load_public_key(path: str) -> RSAPublicKey:
+        """Загружает публичный RSA ключ из файла"""
+        with open(path, 'rb') as f:
+            return load_pem_public_key(f.read())
